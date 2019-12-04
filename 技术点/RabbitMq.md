@@ -81,35 +81,58 @@
 
 表示消息队列服务器实体。
 
-## RabbitMq Windows安装
+## RabbitMq 安装部署
 
-一般来说，安装RabbitMq都要先安装Erlang，然后在rabbitmq安装相对应的rabbitmq server。
+RabbitMq的安装部署下面说了三种，目前建议在公司内网机开发时使用windows系统下的安装，可以进行调试。当项目上线的时候可以在外网机搭建虚拟机，然后在docker中部署，将docker中的镜像包保存到本地然后发送到内网内测服务器上进行docker上的部署。
 
-以下步骤是windows系统中安装成功之后的操作：
+### Windows
 
-win + r 搜索RabbitMQ Command Prompt并以管理员身份运行。
+先安装[Erlang](http://www.erlang.org/download/otp_win64_17.3.exe "Erlang"),然后再安装[Rabbitmq](http://www.rabbitmq.com/ "RabbitMq")。
 
-输入命令： rabbitmq-plugins enable rabbitmq_management (为了启动rabbitmq的可视化界面管理工具)
+Erlang属于RabbitMq运行的环境，两者在windows系统下安装都比较简单，按照安装界面的步骤一步步进行就可以了，下面讲一下安装好了之后的操作。
 
-输入  net stop RabbitMQ  命令停止服务。
+安装好RabbitMq之后，win + r 搜索RabbitMQ Command Prompt并以管理员身份运行。
 
-输入  net start RabbitMQ  命令开始服务。
+在命令行中输入以下命令：
 
-在浏览器中输入  http://127.0.0.1:15672/  访问可视化管理工具界面，登录用户名和密码默认是guest。
+启动RabbitMq的可视化工具
 
-## RabbitMq Linux安装
+```
+rabbitmq-plugins enable rabbitmq_management
+```
 
-如下展示的是Ubuntu系统中安装rabbitmq的过程。
+启动RabbitMq的日志(推荐，可用于开发调试和运维)
 
-先安装erlang语言支持
+```
+rabbitmq-plugins enable rabbitmq_tracing
+```
 
- sudo apt-get install erlang-nox 
+### Linux
 
-更新源然后安装rabbitmq-server
+同样是安装Erlang环境然后安装RabbitMq
 
- sudo apt-get update 
-
+```
+sudo apt-get install erlang-nox 
+sudo apt-get update 
 sudo apt-get install rabbitmq-server
+```
+
+### Docker
+
+Docker中部署比较简单，不需要安装环境，只需要安装镜像源就可以了。
+
+```
+docker search rabbitmq:management
+docker pull rabbitmq:management
+```
+
+启动镜像
+
+```
+docker run -d -p 5672:5672 -p 15672:15672 --name rabbitmq rabbitmq:management
+```
+
+进入docker中的消息队列容器中，用上面windows安装方法中的命令启动相应插件。
 
 ## RabbitMq五种消息队列
 
@@ -189,8 +212,6 @@ public static List<string> Routing()
 ```
 
 ​		上述是消息队列的消费者的代码
-
-
 
 ## 消息队列消费订阅方式
 
